@@ -126,7 +126,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     return;
   }
 
-  let { email, image, previous_image_id, imageUrl } = req.body;
+  let { email, gender, image, previous_image_id, imageUrl } = req.body;
 
   // check if user email exists in db and update
 
@@ -150,6 +150,7 @@ const updateProfile = asyncHandler(async (req, res) => {
     { email },
     {
       username: req.body.username,
+      gender: req.body.gender,
       mobile: req.body.mobile,
       address: req.body.address,
       image: uploadImageResult
