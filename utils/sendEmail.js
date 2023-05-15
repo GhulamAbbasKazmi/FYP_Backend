@@ -22,6 +22,10 @@ const sendEmail = async (email, subject, text) => {
 
   try {
     console.log("Sending your email...");
+    
+    console.log("mail details...", mailDetails);
+
+
     await transporter.sendMail(mailDetails);
     console.log(`Email sent successfully to ${mailDetails.to}`);
   } catch (error) {

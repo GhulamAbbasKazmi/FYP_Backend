@@ -5,6 +5,7 @@ const userController = require("../controllers/userController");
 const User = require("../models/userModel");
 const router = express.Router();
 
+router.route("/all").get(protect, userController.getAllUsers);
 router.post("/register", userController.registerUser);
 router.post("/login", userController.loginUser);
 router.route("/profile").get(protect, userController.getUserProfile);
