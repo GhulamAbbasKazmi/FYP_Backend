@@ -6,10 +6,11 @@ const cloudinary = require("cloudinary").v2;
 //   api_secret: process.env.CLOUD_SECRET,
 // });
 
+// Configuration 
 cloudinary.config({
-  cloud_name: "dglvkccci",
-  api_key: "296581916231144",
-  api_secret: "hkyGPlieOOAm0Z1x4nZHAyFuvxE",
+  cloud_name: "dgxopmrhc",
+  api_key: "452716112379321",
+  api_secret: "cbrhpdOM1aAXEakoWqXuKDJyzNc"
 });
 
 module.exports = cloudinary;

@@ -10,7 +10,7 @@ const { Configuration, OpenAIApi } = require("openai");
 dotenv.config();
 
 const config = new Configuration({
-  apiKey: process.env.OPEN_AI_KEY,
+  apiKey: "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",
 });
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY, {
@@ -35,7 +35,7 @@ mongoose
 app.use(cors());
 app.use(express.json({ limit: "200mb" }));
 
- const server = http.createServer(app);
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
@@ -44,6 +44,8 @@ const io = new Server(server, {
   },
 });
 
+const emailToSocketIdMap = new Map();
+const socketidToEmailMap = new Map();
 
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
@@ -60,6 +62,38 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
   });
+
+
+  // -------------------------------
+
+  socket.on("room:join", (data) => {
+    const { email, room } = data;
+    emailToSocketIdMap.set(email, socket.id);
+    socketidToEmailMap.set(socket.id, email);
+    io.to(room).emit("user:joined", { email, id: socket.id });
+    socket.join(room);
+    io.to(socket.id).emit("room:join", data);
+  });
+
+  socket.on("user:call", ({ to, offer }) => {
+    io.to(to).emit("incomming:call", { from: socket.id, offer });
+  });
+
+  socket.on("call:accepted", ({ to, ans }) => {
+    io.to(to).emit("call:accepted", { from: socket.id, ans });
+  });
+
+  socket.on("peer:nego:needed", ({ to, offer }) => {
+    // console.log("peer:nego:needed", offer);
+    io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
+  });
+
+  socket.on("peer:nego:done", ({ to, ans }) => {
+    // console.log("peer:nego:done", ans);
+    io.to(to).emit("peer:nego:final", { from: socket.id, ans });
+  });
+
+
 });
 
 
@@ -80,7 +114,7 @@ app.use("/api/password-reset", resetPasswordRoute);
 app.use("/api/blogs", blogs);
 app.use("/api/drugs", drugs);
 
-app.use("/api/config/paypal", (req, res)=> res.send(process.env.ClIENT_ID_PAYPAL));
+app.use("/api/config/paypal", (req, res) => res.send(process.env.ClIENT_ID_PAYPAL));
 
 app.get("/api/config/stripe", (req, res) => {
   res.send({
