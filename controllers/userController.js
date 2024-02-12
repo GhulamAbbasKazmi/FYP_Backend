@@ -53,7 +53,7 @@ var populateQuery = [
     model: "User",
   },
 ];
-
+//,,,,,,,,,,,,,,,,
 
 const getAllUsers = asyncHandler(async (req, res) => {
 
